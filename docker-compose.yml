@@ -1,0 +1,34 @@
+services:
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    environment:
+      CASSANDRA_CLUSTER_NAME: "wiki_cluster"
+      CASSANDRA_DATACENTER: "wiki_datacenter"
+      CASSANDRA_KEYSPACE: "wiki"
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    healthcheck:
+      test: [ "CMD-SHELL", "cqlsh -e 'SELECT now() FROM system.local'" ]
+      interval: 1s
+      timeout: 10s
+      retries: 10
+
+  init-cassandra:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    environment:
+      CASSANDRA_KEYSPACE: wiki
+      CASSANDRA_HOST: cassandra
+    command: [ "python", "create_cassandra_table.py" ]
+    volumes:
+      - ./app:/app
+
+volumes:
+  cassandra_data:
