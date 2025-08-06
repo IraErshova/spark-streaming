@@ -1,0 +1,8 @@
+cassandra-driver==3.29.2
+click==8.2.1
+geomet==0.2.1.post1
+six==1.17.0
+kafka-python~=2.2.15
+requests~=2.32.4
+pyspark~=3.0.3
+pyspark-stubs~=3.0.0.post3
